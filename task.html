@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do list</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #2f363e;
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            position: relative;
+            width: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+            /* Enable scrolling */
+            border-radius: 40px;
+            background-color: #2f363e;
+            padding: 30px 50px;
+            box-shadow: 25px 25px 75px rgb(0, 0, 0, 0.25),
+                10px 10px 70px rgba(0, 0, 0, 0.25),
+                inset 5px 5px 10px rgba(0, 0, 0, 0.5),
+                inset 5px 5px 20px rgba(255, 255, 255, 0.25),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.75);
+        }
+
+        h2 {
+            width: 100%;
+            font-weight: 750px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 1.75em;
+            margin-bottom: 10px;
+        }
+
+        #inputBx {
+            position: relative;
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            border-radius: 30px;
+            font-size: 2em;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25), inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .box li {
+            position: relative;
+            width: calc(100% - 40px);
+            display: flex;
+            align-items: center;
+            background: #1f83f2;
+            margin: 15px 0;
+            padding: 10px 10px 10px 45px;
+            min-height: 46px;
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25), inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        .box li::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff2c74;
+            left: 10px;
+            border-radius: 50%;
+        }
+
+        .box li.done {
+            background: #f00;
+            text-decoration: line-through;
+        }
+
+        .box li i {
+            position: absolute;
+            width: 30px;
+            justify-content: center;
+            align-items: center;
+            right: -40px;
+            height: 30px;
+            background: #ff2c74;
+            display: flex;
+            box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.25), inset 2px 2px 5px rgba(255, 255, 255, 0.5), inset -3px -3px 5px rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+        }
+
+        .box li i::before {
+            content: '';
+            transform: rotate(45deg);
+            position: absolute;
+            width: 15px;
+            height: 2px;
+            background: #ffffff;
+        }
+
+        .box li i::after {
+            content: '';
+            transform: rotate(-45deg);
+            width: 15px;
+            height: 2px;
+            background: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">
+            <h2>To Do List</h2>
+            <input type="text" placeholder="write here....." id="inputBx">
+            <ul id="list"></ul>
+        </div>
+    </div>
+    <script>
+        let inputBx = document.querySelector('#inputBx');
+        let list = document.querySelector('#list');
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        // Load tasks from localStorage on page load
+        tasks.forEach(task => {
+            addItem(task);
+        });
+
+        inputBx.addEventListener('keyup', function (event) {
+            if (event.key === 'Enter') {
+                addItemAndSave(this.value);
+                this.value = '';
+            }
+        });
+
+        list.addEventListener('click', function (event) {
+            if (event.target.tagName === 'LI') {
+                event.target.classList.toggle('done');
+                saveTasks();
+            } else if (event.target.tagName === 'I') {
+                event.target.parentElement.remove();
+                saveTasks();
+            }
+        });
+
+        function addItemAndSave(task) {
+            if (task.trim() !== '') {
+                addItem(task);
+                tasks.push(task);
+                saveTasks();
+            }
+        }
+
+        function addItem(task) {
+            let listItem = document.createElement('li');
+            listItem.innerHTML = `${task}<i></i>`;
+            list.appendChild(listItem);
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    </script>
+</body>
+
+</html>

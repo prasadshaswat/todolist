@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .register-link a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="return login()">
+            <input type="text" id="username" placeholder="Username" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
+            <input type="submit" value="Login">
+        </form>
+        <div class="register-link">
+            Don't have an account? <a href="#" onclick="showRegisterForm()">Register</a>
+        </div>
+    </div>
+
+    <div id="registerForm" class="container" style="display: none;">
+        <h2>Register</h2>
+        <form onsubmit="return register()">
+            <input type="text" id="newUsername" placeholder="Username" required><br>
+            <input type="password" id="newPassword" placeholder="Password" required><br>
+            <input type="submit" value="Register">
+        </form>
+    </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            // Perform authentication - You can replace this with your authentication logic
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+            var user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                alert("Login successful!");
+                // Redirect to tasks.html
+                window.location.href = "task.html";
+                return false; // Prevent form submission
+            } else {
+                alert("Invalid username or password");
+                return false; // Prevent form submission
+            }
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function register() {
+            var newUsername = document.getElementById('newUsername').value;
+            var newPassword = document.getElementById('newPassword').value;
+            // Check if username already exists
+            var users = JSON.parse(localStorage.getItem('users')) || [];
+            var existingUser = users.find(u => u.username === newUsername);
+            if (existingUser) {
+                alert("Username already exists. Please choose a different one.");
+                return false; // Prevent form submission
+            } else {
+                // Add new user to the users array
+                users.push({ username: newUsername, password: newPassword });
+                // Save updated users array to localStorage
+                localStorage.setItem('users', JSON.stringify(users));
+                alert("Registration successful! You can now login.");
+                // Go back to the login form
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
+                return false; // Prevent form submission
+            }
+        }
+    </script>
+</body>
+
+</html>
